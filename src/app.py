@@ -5,7 +5,7 @@ from dash.dependencies import Input, Output
 import plotly.express as px
 from datetime import datetime, date
 
-ecom_sales = pd.read_csv("C:/projects/dash/ecom_data_full.csv")
+ecom_sales = pd.read_csv("./ecom_data_full.csv")
 logo_link = 'https://assets.datacamp.com/production/repositories/5893/datasets/fdbe0accd2581a0c505dab4b29ebb66cf72a1803/e-comlogo.png'
 color_scheme = px.colors.qualitative.T10
 ecom_bar = ecom_sales.groupby('Country')['OrderValue'].agg('sum').reset_index(name='Total Sales ($)').sort_values(by='Total Sales ($)', ascending=False)
