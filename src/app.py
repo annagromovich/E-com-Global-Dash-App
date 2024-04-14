@@ -12,11 +12,15 @@ ecom_bar = ecom_sales.groupby('Country')['OrderValue'].agg('sum').reset_index(na
 ecom_line = ecom_sales.groupby(['Year-Month','Country'])['OrderValue'].agg('sum').reset_index(name='Total Sales ($)')
 line_graph = px.line(data_frame=ecom_line, x='Year-Month', y='Total Sales ($)', title='Total Sales by Month', color='Country')
 bar_fig_country = px.bar(data_frame = ecom_bar, x='Total Sales ($)', y='Country', color='Country', orientation = 'h', title='Sales by Country', color_discrete_sequence=color_scheme)
-bar_fig_country.update_layout(plot_bgcolor='#FFFFFF')
+bar_fig_country.update_layout(plot_bgcolor='#FFFFFF', showlegend=False, bargap=0.4)
 bar_fig_country.update_xaxes(showgrid=True, gridwidth=1, gridcolor='rgba(0, 0, 255, 0.1)')  # Blue grid with 10% opacity
 bar_fig_country.update_yaxes(showgrid=True, gridwidth=1, gridcolor='rgba(0, 0, 255, 0.1)', title_text='') 
 
-app = dash.Dash()
+external_stylesheets = ['styles.css']
+
+app = dash.Dash(__name__, meta_tags=[{'name': 'viewport',
+                            'content': 'width = device-width, initial-scale=0.8, maximum-scale=0.8, minumum-scale=0.8'}],
+                 external_stylesheets=external_stylesheets)
 server = app.server
 
 app.layout = html.Div(
@@ -24,40 +28,45 @@ app.layout = html.Div(
         html.Img(src=logo_link, style={'float':'left'}),
         html.H1('The Sales Dashboard for E-com Global', style={'text-align': 'center', 'color': '#1f77b4'}),
         html.Div([
-            dcc.Graph(id='bar_graph', figure=bar_fig_country, style={'width':'70%', 'display': 'inline-block', 'vertical-align': 'middle'}),
+           dcc.Graph(id='bar_graph', figure=bar_fig_country, className='custom-graph', style={'display': 'inline-block', 'vertical-align': 'middle'}),
             html.Span(["In 2011, ", html.B("Australia"), " emerged as E-com Global's top customer, driving total sales volume surpassing $6,000, constituting a substantial ", html.B("29%"), " of the company's overall sales. ", html.B("France and the United Kingdom"), " closely followed, each contributing just over $5,500 in sales. Meanwhile, sales volumes with ", html.B("Germany"), " hovered around $3,150, while transactions with ", html.B("Hong Kong"), " amounted to approximately $1,660."],
-                      style={'width': '25%', 'display': 'inline-block', 'vertical-align': 'middle', 'font-size': '18px', 'line-height': '1.5', 'text-align': 'justify', 'margin-right': '3px', 'margin-left': '10px', 'margin-top': '40px', 'background-color': 'rgba(173, 216, 230, 0.5)', 'padding': '10px', 'border-radius': '5px'}),
-            html.Br(),
-            html.Br()]),
+                      style={'display': 'inline-block', 'font-size': '18px', 'line-height': '1.5', 'text-align': 'justify', 'background-color': 'rgba(173, 216, 230, 0.5)', 'padding': '10px', 'border-radius': '5px', 'margin': '0', 'box-sizing': 'border-box', 'vertical-align': 'middle'},
+                      className='custom-span'),
+            ]),
+        html.Br(),
+        html.Br(),
         html.Div([
-            html.Br(),
-            html.H3('Select a Country to Update All the Following Graphs Accordingly', style={'position': 'absolute', 'top': '560px', 'left': '560px', 'z-index': '1000'}),
-            html.Br(),
-            html.Div([
-                dcc.Dropdown(
-                    id='country_dd',
-                    options=[
-                        {'label': 'UK', 'value': 'United Kingdom'},
-                        {'label': 'GM', 'value': 'Germany'},
-                        {'label': 'FR', 'value': 'France'},
-                        {'label': 'AUS', 'value': 'Australia'},
-                        {'label': 'HK', 'value': 'Hong Kong'}
-                    ],
-                    style={'width': '150px', 'margin': '0 auto'}
-                ),
-            ],
-                     style={'position': 'absolute', 'top': '570px', 'left': '1100px', 'z-index': '1000'}
-            ),
+                html.H3('Select a Country to Update All the Following Graphs Accordingly'),
+                html.Div([
+                    dcc.Dropdown(
+                        id='country_dd',
+                        options=[
+                            {'label': 'UK', 'value': 'United Kingdom'},
+                            {'label': 'GM', 'value': 'Germany'},
+                            {'label': 'FR', 'value': 'France'},
+                            {'label': 'AUS', 'value': 'Australia'},
+                            {'label': 'HK', 'value': 'Hong Kong'}
+                        ],
+                        style={'width': '150px', 'margin': '0 auto'}
+                    ),
+                ])], style={ 'display': 'flex', 'align-items': 'center', 'gap': '20px' }),
             html.Div([
                 html.Br(),
-                dcc.Graph(id='graph_1', style={'width':'70%', 'display': 'inline-block', 'vertical-align': 'middle'}),
+                dcc.Graph(id='graph_1', style={'display': 'inline-block', 'vertical-align': 'middle'},
+                          className = 'custom-graph'),
                 html.Span(["E-com Global's customer countries experience sales peaks at different times of the year. The ", html.B("UK and France"), " typically see their highest sales towards the end of the year, during the holiday season. In contrast, ", html.B("Germany and Australia"), " enjoy sales peaks in the spring months, specifically in May and March, respectively. Meanwhile, ", html.B("Hong Kong"), " stands out with two sales peaks annually, occurring in January and late summer."],
-                          style={'width': '25%', 'display': 'inline-block', 'vertical-align': 'middle', 'font-size': '18px', 'line-height': '1.5', 'text-align': 'justify', 'margin-right': '3px', 'margin-left': '10px', 'margin-top': '40px', 'background-color': 'rgba(173, 216, 230, 0.5)', 'padding': '10px', 'border-radius': '5px'}),
+                          style={'display': 'inline-block', 'vertical-align': 'middle', 'font-size': '18px', 'line-height': '1.5', 'text-align': 'justify', 'background-color': 'rgba(173, 216, 230, 0.5)', 'padding': '10px', 'border-radius': '5px'},
+                          className='custom-span'),
+                html.Br(),
+                html.Br(),
                 html.Span([html.B("Australia"), ", E-com Global's largest customer, favors goods in the Kitchen category. Meanwhile, European nations such as ", html.B("the UK, Germany, and France"), " tend to purchase items primarily from the Garden category. In contrast, Clothes stand out as the top goods category for ", html.B("Hong Kong.")],
-                          style={'width': '25%', 'display': 'inline-block', 'vertical-align': 'middle', 'font-size': '18px', 'line-height': '1.5', 'text-align': 'justify', 'margin-right': '10px', 'margin-left': '10px', 'margin-top': '40px', 'background-color': 'rgba(173, 216, 230, 0.5)', 'padding': '10px', 'border-radius': '5px'}),
-                dcc.Graph(id='graph_2', style={'width':'70%', 'display': 'inline-block', 'vertical-align': 'middle'})
+                          style={'display': 'inline-block', 'vertical-align': 'middle', 'font-size': '18px', 'line-height': '1.5', 'text-align': 'justify', 'background-color': 'rgba(173, 216, 230, 0.5)', 'padding': '10px', 'border-radius': '5px'},
+                          className = 'custom-span'),
+                dcc.Graph(id='graph_2', style={'display': 'inline-block', 'vertical-align': 'middle'},
+                          className='custom-graph')
             ]),
             html.Div([
+                html.H3('Select a Goods Category to Update the Graph Accordingly'),
                 dcc.Dropdown(id='category_dd',
                              options=[
                                  {'label': 'Kitchen', 'value': 'Kitchen'},
@@ -65,16 +74,18 @@ app.layout = html.Div(
                                  {'label': 'Household', 'value': 'Household'},
                                  {'label': 'Clothes', 'value': 'Clothes'}
                              ],
-                             style={'width': '150px', 'margin': '0 auto'}
+                             style={'width': '150px'}
                              ),
             ],
-                     style={'position': 'absolute', 'top': '1525px', 'left': '653px', 'z-index': '1500'}),
+            style={ 'display': 'flex', 'align-items': 'center', 'gap': '20px' }),
+
             html.Div([
-                dcc.Graph(id='categories', style={'width':'70%', 'display': 'inline-block', 'vertical-align': 'middle'}),
+                dcc.Graph(id='categories', style={'display': 'inline-block', 'vertical-align': 'middle'},
+                          className='custom-graph'),
                 html.Span(["Scales stand out as the top pick in the ", html.B("Kitchen"), " goods category worldwide, while Seeds dominate as the preferred choice in the ", html.B("Garden"), " category. Across households globally, Rugs emerge as the favored item in the ", html.B("Household"), " category, whereas Hats take the lead in the ", html.B("Clothes"), " category. To delve into country-specific preferences, simply select your desired country from the dropdown menu above."],
-                          style={'width': '25%', 'display': 'inline-block', 'vertical-align': 'middle', 'font-size': '18px', 'line-height': '1.5', 'text-align': 'justify', 'margin-right': '10px', 'margin-left': '10px', 'margin-top': '40px', 'background-color': 'rgba(173, 216, 230, 0.5)', 'padding': '10px', 'border-radius': '5px'})
+                          style={'display': 'inline-block', 'vertical-align': 'middle', 'font-size': '18px', 'line-height': '1.5', 'text-align': 'justify', 'background-color': 'rgba(173, 216, 230, 0.5)', 'padding': '10px', 'border-radius': '5px'},
+                          className='custom-span')
             ])
-        ])
     ]
 )
 
@@ -95,12 +106,15 @@ def update_plots(input_country):
     ecom_line = sales.groupby(['Year-Month','Country'])['OrderValue'].agg('sum').reset_index(name='Total Sales ($)')
     graph_1 = px.line(data_frame=ecom_line, x='Year-Month', y='Total Sales ($)', title=f'Total Sales by Month in {country_filter}', color='Country', color_discrete_sequence=color_scheme)
     graph_1.update_xaxes(title_text = '')
+    graph_1.update_yaxes(title_text = '')
+    graph_1.update_layout(legend=dict(font=dict(size=10)))
     ecom_bar_major_cat = sales.groupby('Major Category')['OrderValue'].agg('sum').reset_index(name='Total Sales ($)').sort_values(by='Total Sales ($)', ascending=False)
     graph_2 = px.bar(
         title=f'Sales in {country_filter} by Major Category', data_frame=ecom_bar_major_cat, x='Total Sales ($)', y='Major Category',
         color='Major Category', color_discrete_sequence=color_scheme
     )
     graph_2.update_yaxes(title_text='')
+    graph_2.update_layout(showlegend = False)
     graphs = [graph_1, graph_2]
     
     # Loop through the graphs and customize the layout
@@ -115,8 +129,8 @@ def update_plots(input_country):
 
 @app.callback(
     Output(component_id='categories', component_property='figure'),
-    Input(component_id='category_dd', component_property='value'),
-    Input(component_id='country_dd', component_property='value')
+    [Input(component_id='category_dd', component_property='value'),
+    Input(component_id='country_dd', component_property='value')]
 )
 def update_categories_graph(input_category, input_country):
     default_category = 'Kitchen'
@@ -140,7 +154,12 @@ def update_categories_graph(input_category, input_country):
         color_discrete_sequence=color_scheme
     )
     categories.update_layout(
-        plot_bgcolor='#FFFFFF',  
+        plot_bgcolor='#FFFFFF',
+        showlegend=False,
+        title = {
+            'text': title,
+            'font': {'size': 14}
+        },  
             xaxis=dict(showgrid=True, gridwidth=1, gridcolor='rgba(0, 0, 255, 0.1)'), 
             yaxis=dict(showgrid=True, gridwidth=1, gridcolor='rgba(0, 0, 255, 0.1)')
     )
@@ -148,5 +167,5 @@ def update_categories_graph(input_category, input_country):
     return categories
     
 if __name__ == '__main__':
-    app.run_server(debug=False)
+    app.run_server(debug=True)
     

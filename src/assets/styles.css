@@ -1,0 +1,20 @@
+.custom-span {
+    width: 350px; /* Set the width to 250px */
+}
+
+/* Media query for screens smaller than 768px (typical mobile devices) */
+@media screen and (max-width: 760px) {
+    .custom-span {
+        width: 95%; /* Set the width to 100% on mobile devices */
+    }
+}
+
+.custom-graph {
+    width: 850px;
+}
+
+@media screen and (max-width: 760px) {
+    .custom-graph {
+        width: 100%; /* Set the width to 100% on mobile devices */
+    }
+}
