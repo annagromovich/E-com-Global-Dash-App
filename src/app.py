@@ -114,7 +114,7 @@ def update_plots(input_country):
         color='Major Category', color_discrete_sequence=color_scheme
     )
     graph_2.update_yaxes(title_text='')
-    graph_2.update_layout(showlegend = False)
+    graph_2.update_layout(showlegend = False, bargap = 0.4)
     graphs = [graph_1, graph_2]
     
     # Loop through the graphs and customize the layout
@@ -155,6 +155,7 @@ def update_categories_graph(input_category, input_country):
     )
     categories.update_layout(
         plot_bgcolor='#FFFFFF',
+        bargap = 0.4,
         showlegend=False,
         title = {
             'text': title,
